@@ -2261,22 +2261,23 @@ pub fn load_custom_client() {
     #[cfg(debug_assertions)]
     if let Ok(data) = std::fs::read_to_string("./custom.txt") {
         read_custom_client(data.trim());
+        crate::custom_server::apply_builtin();
         return;
     }
-    let Some(path) = std::env::current_exe().map_or(None, |x| x.parent().map(|x| x.to_path_buf()))
-    else {
-        return;
-    };
-    #[cfg(target_os = "macos")]
-    let path = path.join("../Resources");
-    let path = path.join("custom.txt");
-    if path.is_file() {
-        let Ok(data) = std::fs::read_to_string(&path) else {
-            log::error!("Failed to read custom client config");
-            return;
-        };
-        read_custom_client(&data.trim());
+    if let Some(path) =
+        std::env::current_exe().map_or(None, |x| x.parent().map(|x| x.to_path_buf()))
+    {
+        #[cfg(target_os = "macos")]
+        let path = path.join("../Resources");
+        let path = path.join("custom.txt");
+        if path.is_file() {
+            match std::fs::read_to_string(&path) {
+                Ok(data) => read_custom_client(data.trim()),
+                Err(_) => log::error!("Failed to read custom client config"),
+            }
+        }
     }
+    crate::custom_server::apply_builtin();
 }
 
 fn read_custom_client_advanced_settings(

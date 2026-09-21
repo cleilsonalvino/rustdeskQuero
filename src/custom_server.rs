@@ -1,9 +1,11 @@
+use base::config::keys;
 use hbb_common::{
     bail,
     base64::{
         engine::general_purpose::{URL_SAFE, URL_SAFE_NO_PAD},
         Engine as _,
     },
+    config::OVERWRITE_SETTINGS,
     sodiumoxide::crypto::sign,
     ResultType,
 };
@@ -19,6 +21,46 @@ pub struct CustomServer {
     pub api: String,
     #[serde(default)]
     pub relay: String,
+}
+
+impl CustomServer {
+    /// QueroDesk built-in server (host/key/relay locked into the binary).
+    pub fn builtin() -> Self {
+        Self {
+            key: "LNIWRcjtiheJDH8iYyT5IhwBEwOQ2H8zf6N2aswYoQI=".to_owned(),
+            host: "desk.cleilsonalvino.com.br".to_owned(),
+            api: String::new(),
+            relay: "desk.cleilsonalvino.com.br".to_owned(),
+        }
+    }
+}
+
+/// Apply QueroDesk branding + server settings (locked via OVERWRITE_SETTINGS).
+/// Sets APP_NAME here so CI works without a custom hbb_common submodule.
+pub fn apply_builtin() {
+    *hbb_common::config::APP_NAME.write().unwrap() = "QueroDesk".to_owned();
+
+    let lic = CustomServer::builtin();
+    if !lic.host.is_empty() {
+        *hbb_common::config::PROD_RENDEZVOUS_SERVER.write().unwrap() = lic.host.clone();
+    }
+
+    let mut settings = OVERWRITE_SETTINGS.write().unwrap();
+    if !lic.host.is_empty() {
+        settings.insert(
+            keys::OPTION_CUSTOM_RENDEZVOUS_SERVER.to_owned(),
+            lic.host.clone(),
+        );
+    }
+    if !lic.key.is_empty() {
+        settings.insert(keys::OPTION_KEY.to_owned(), lic.key);
+    }
+    if !lic.relay.is_empty() {
+        settings.insert(keys::OPTION_RELAY_SERVER.to_owned(), lic.relay);
+    }
+    if !lic.api.is_empty() {
+        settings.insert(keys::OPTION_API_SERVER.to_owned(), lic.api);
+    }
 }
 
 fn get_custom_server_from_config_string(s: &str) -> ResultType<CustomServer> {
