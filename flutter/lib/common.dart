@@ -248,18 +248,22 @@ class ColorThemeExtension extends ThemeExtension<ColorThemeExtension> {
 class MyTheme {
   MyTheme._();
 
-  static const Color grayBg = Color(0xFFEFEFF2);
-  static const Color accent = Color(0xFF0071FF);
-  static const Color accent50 = Color(0x770071FF);
-  static const Color accent80 = Color(0xAA0071FF);
+  static const Color grayBg = Color(0xFFF5F0FA);
+  // Quero Delivery brand: https://brand.querodelivery.com/cores/
+  static const Color accent = Color(0xFF9B4DEE);
+  static const Color accent50 = Color(0x779B4DEE);
+  static const Color accent80 = Color(0xAA9B4DEE);
   static const Color canvasColor = Color(0xFF212121);
   static const Color border = Color(0xFFCCCCCC);
-  static const Color idColor = Color(0xFF00B6F0);
+  static const Color idColor = Color(0xFFE0457B);
   static const Color darkGray = Color.fromARGB(255, 148, 148, 148);
-  static const Color cmIdColor = Color(0xFF21790B);
+  static const Color cmIdColor = Color(0xFF6700A2);
   static const Color dark = Colors.black87;
-  static const Color button = Color(0xFF2C8CFF);
+  static const Color button = Color(0xFF6700A2);
   static const Color hoverBorder = Color(0xFF999999);
+  static const Color brandYellow = Color(0xFFF7EA48);
+  static const Color brandPink = Color(0xFFE0457B);
+  static const Color brandLight = Color(0xFFD8B8F9);
 
   // ListTile
   static const ListTileThemeData listTileTheme = ListTileThemeData(
@@ -452,7 +456,7 @@ class MyTheme {
         style:
             MenuStyle(backgroundColor: MaterialStatePropertyAll(Colors.white))),
     colorScheme: ColorScheme.light(
-        primary: Colors.blue, secondary: accent, background: grayBg),
+        primary: accent, secondary: brandPink, background: grayBg),
     popupMenuTheme: PopupMenuThemeData(
         color: Colors.white,
         shape: RoundedRectangleBorder(
@@ -472,8 +476,8 @@ class MyTheme {
     useMaterial3: false,
     brightness: Brightness.dark,
     hoverColor: Color.fromARGB(255, 45, 46, 53),
-    scaffoldBackgroundColor: Color(0xFF18191E),
-    dialogBackgroundColor: Color(0xFF18191E),
+    scaffoldBackgroundColor: Color(0xFF1A0B2E),
+    dialogBackgroundColor: Color(0xFF1A0B2E),
     appBarTheme: AppBarTheme(
       shadowColor: Colors.transparent,
     ),
@@ -560,9 +564,9 @@ class MyTheme {
         style: MenuStyle(
             backgroundColor: MaterialStatePropertyAll(Color(0xFF121212)))),
     colorScheme: ColorScheme.dark(
-      primary: Colors.blue,
-      secondary: accent,
-      background: Color(0xFF24252B),
+      primary: accent,
+      secondary: brandPink,
+      background: Color(0xFF2D1054),
     ),
     popupMenuTheme: PopupMenuThemeData(
         shape: RoundedRectangleBorder(
