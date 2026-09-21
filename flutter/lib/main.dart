@@ -24,6 +24,7 @@ import 'package:provider/provider.dart';
 import 'package:window_manager/window_manager.dart';
 
 import 'common.dart';
+import 'common/widgets/activation_page.dart';
 import 'consts.dart';
 import 'mobile/pages/home_page.dart';
 import 'mobile/pages/server_page.dart';
@@ -136,12 +137,14 @@ void runMainApp(bool startService) async {
   checkUpdate();
   // trigger connection status updater
   await bind.mainCheckConnectStatus();
-  if (startService) {
+  final activated = ActivationGate.isActivated();
+  // Only start the remote service after product activation.
+  if (startService && activated) {
     gFFI.serverModel.startService();
   }
   await Future.wait([gFFI.abModel.loadCache(), gFFI.groupModel.loadCache()]);
   gFFI.userModel.refreshCurrentUser();
-  runApp(App());
+  runApp(App(startServiceOnUnlock: startService && !activated));
 
   bool? alwaysOnTop;
   if (isDesktop) {
@@ -181,7 +184,7 @@ void runMobileApp() async {
   draggablePositions.load();
   await Future.wait([gFFI.abModel.loadCache(), gFFI.groupModel.loadCache()]);
   gFFI.userModel.refreshCurrentUser();
-  runApp(App());
+  runApp(const App());
   await initUniLinks();
 }
 
@@ -419,6 +422,10 @@ WindowOptions getHiddenTitleBarWindowOptions(
 }
 
 class App extends StatefulWidget {
+  final bool startServiceOnUnlock;
+
+  const App({Key? key, this.startServiceOnUnlock = false}) : super(key: key);
+
   @override
   State<App> createState() => _AppState();
 }
@@ -501,11 +508,14 @@ class _AppState extends State<App> with WidgetsBindingObserver {
           theme: MyTheme.lightTheme,
           darkTheme: MyTheme.darkTheme,
           themeMode: MyTheme.currentThemeMode(),
-          home: isDesktop
-              ? const DesktopTabPage()
-              : isWeb
-                  ? WebHomePage()
-                  : HomePage(),
+          home: ActivationGate(
+            startServiceOnUnlock: widget.startServiceOnUnlock,
+            child: isDesktop
+                ? const DesktopTabPage()
+                : isWeb
+                    ? WebHomePage()
+                    : HomePage(),
+          ),
           localizationsDelegates: const [
             GlobalMaterialLocalizations.delegate,
             GlobalWidgetsLocalizations.delegate,

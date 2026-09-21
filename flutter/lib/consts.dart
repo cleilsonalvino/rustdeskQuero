@@ -717,3 +717,8 @@ extension WindowsTargetExt on int {
 }
 
 const kCheckSoftwareUpdateFinish = 'check_software_update_finish';
+
+/// QueroDesk product activation (Flutter gate on first launch).
+const String kOptionQuerodeskActivated = 'querodesk-activated';
+/// Change this value before distributing client builds.
+const String kQuerodeskActivationKey = 'QUERO-DELIVERY';
